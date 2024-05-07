@@ -9,6 +9,11 @@ public class Enemy : Entity
     public int goldValue;
     private List<Block> _blockList;
 
+    public float moveAmount = 1f;
+    public float moveSpeed = 1f;
+    public float pauseTime = 2f;
+    public bool isHit = false;
+
     private void Start()
     {
         _blockList = new List<Block>();
@@ -19,8 +24,39 @@ public class Enemy : Entity
         _blockList.Add(new Block().addEffect(1, 6));
         _blockList.Add(new Block().addEffect(1, 6));
         _blockList.Add(new Block().addEffect(0, 12));
+
+        StartCoroutine(IdleAnimation());
     }
-    
+
+    IEnumerator IdleAnimation()
+    {
+        Vector3 initialPos = transform.position;
+        
+        while (true)
+        {
+            if (isHit)
+            {
+                transform.position = initialPos;
+                yield return new WaitForSeconds(pauseTime);
+                isHit = false;
+            }
+            else
+            {
+                while (transform.position.y < initialPos.y + moveAmount)
+                {
+                    transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
+                    yield return null;
+                }
+
+                while (transform.position.y > initialPos.y)
+                {
+                    transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
+                    yield return null;
+                }
+            }
+        }
+    }
+
     public override void SetUp()
     {
         _cardManager = CardManager.Instance;
@@ -60,4 +96,6 @@ public class Enemy : Entity
         CombatManager.Instance.RemoveEnemy(gameObject);
         //TODO : add gold to player
     }
+
+    
 }

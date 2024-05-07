@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 
 public abstract class Entity : MonoBehaviour
@@ -61,6 +62,7 @@ public abstract class Entity : MonoBehaviour
     public int takeDamage(int damage)
     {
         Debug.Log($"{damage} damage taken to {gameObject.name}");
+        gameObject.GetComponent<Enemy>().isHit = true;
         
         int remainingDamage = damage - getShield();
         // Debug.Log($"Taking {remainingDamage} damage");
@@ -108,4 +110,5 @@ public abstract class Entity : MonoBehaviour
     }
     
     public abstract void Die();
+    
 }
